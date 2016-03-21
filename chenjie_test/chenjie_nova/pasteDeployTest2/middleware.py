@@ -20,4 +20,4 @@ class Auth(object):
 
     def process_request(self, req):
         if req.headers.get('X-Auth-Token') != 'open-sesame':
-            return exc.HTTPForbidden()
+            return webob.exc.HTTPForbidden()
