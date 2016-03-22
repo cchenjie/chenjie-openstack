@@ -14,10 +14,12 @@ if not os.path.isfile(ini_path):
     print("Cannot find %s\n" % ini_path)
     exit(1)
 
+
 class Hello(object):
     @wsgify(RequestClass=Request)
     def __call__(self, request):
         return Response('Hello World 2!\n')
+
 
 def app_factory(global_config, **local_config):
     return Hello()
