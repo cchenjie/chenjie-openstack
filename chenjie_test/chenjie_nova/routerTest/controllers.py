@@ -18,11 +18,14 @@ class Controller(object):
         if name:
             inst_id = str(uuid.uuid4())
             inst = {'id': inst_id, 'name': name}
+            self.instances[inst_id] = inst
+            return {'id': inst_id, 'instance': inst}
 
-        self.instances[inst_id] = inst
-        return {'instance': inst}
+    def index(self, req):
+        print(req.params)
+        return self.instances
 
-    def get_all(self, req):
+    def show(self, req, instance_id):
         print(req.params)
         return self.instances
 
@@ -39,5 +42,6 @@ class Controller(object):
             return webob.Response(body='', status='204 Not Found', headerlist=[('Content-Type', 'application/json')])
         else:
             if not isinstance(result, basestring):
-                result = simplejson.dumps(result)
+                result = simplejson.dumps(result) + '\n'
             return result
+
