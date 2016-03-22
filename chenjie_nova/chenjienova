@@ -1,0 +1,23 @@
+#! /bin/sh
+# /etc/init.d/chenjienova
+
+case "$1" in
+  start)
+    echo "Starting chenjienova"
+    chenjie-novaservice start &
+    ;;
+  stop)
+    echo "Stopping chenjienova"
+    chenjie-novaservice stop
+    ;;
+  restart)
+    echo "Restarting chenjienova"
+    chenjie-novaservice restart
+    ;;
+  *)
+    echo "Usage: /etc/init.d/chenjienova {start|stop|restart}"
+    exit 1
+    ;;
+esac
+
+exit 0

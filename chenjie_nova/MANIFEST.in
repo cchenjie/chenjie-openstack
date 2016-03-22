@@ -1,0 +1,6 @@
+include AUTHORS
+include ChangeLog
+exclude .gitignore
+exclude .gitreview
+global-include api-paste.ini
+global-exclude *.pyc
