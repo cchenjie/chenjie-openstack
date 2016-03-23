@@ -22,12 +22,22 @@ class Controller(object):
             return {'id': inst_id, 'instance': inst}
 
     def index(self, req):
-        print(req.params)
-        return self.instances
+        return {'instances': self.instances.values()}
 
     def show(self, req, instance_id):
-        print(req.params)
-        return self.instances
+        inst = self.instances.get(instance_id)
+        return {'instance': inst}
+
+    def update(self, req, instance_id):
+        inst = self.instances.get(instance_id)
+        name = req.params['name']
+        if inst and name:
+            inst['name'] = name
+            return {'instance': inst}
+
+    def delete(self, req, instance_id):
+        if self.instances.get(instance_id):
+            self.instances.pop(instance_id)
 
     @wsgify(RequestClass=webob.Request)
     def __call__(self, req):
