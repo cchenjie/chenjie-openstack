@@ -42,4 +42,16 @@ def app_factory(global_config, **local_config):
 
 def _err():
     return {'code': 500, 'message': 'Exception thrown out'}
+'''
+import os
+import sys
+from paste.deploy import loadapp
+from paste import httpserver
 
+ini_path = os.path.normpath(
+    os.path.join(os.path.abspath(sys.argv[0]), os.pardir, 'api-paste.ini')
+)
+
+wsgi_app = loadapp('config:' + ini_path)
+httpserver.serve(wsgi_app, host='127.0.0.1', port=8080)
+'''
