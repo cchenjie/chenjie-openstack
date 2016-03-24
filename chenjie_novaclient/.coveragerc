@@ -1,0 +1,7 @@
+[run]
+branch = True
+source = chenjie_novaclient
+omit = chenjie_novaclient/openstack/*
+
+[report]
+ignore_errors = True
