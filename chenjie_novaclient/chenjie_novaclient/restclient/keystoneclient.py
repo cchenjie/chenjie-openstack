@@ -10,6 +10,6 @@ class keystoneclient:
                % (username, passwd, tenant)
         resp = restclient.post_req(body, endpoint)
         receive_data = json.loads(resp)
-        print json.dumps(receive_data, sort_keys=True, indent=2)
+        # print json.dumps(receive_data, sort_keys=True, indent=2)
         token = receive_data['access']['token']['id']
         return token

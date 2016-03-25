@@ -33,24 +33,59 @@ def show_server():
     if len(sys.argv[1:]) != 2:
         error_wrong_number_args()
         exit(1)
-    resp = novaclient.show(NOVA_EP, sys.argv[2], TOKEN, TENANT)
-    receive_data = json.loads(resp)
-    print json.dumps(receive_data, sort_keys=True, indent=2)
+    server_name = sys.argv[2]
+    resp = novaclient.show(NOVA_EP, server_name, TOKEN, TENANT)
+    try:
+        receive_data = json.loads(resp)
+        print json.dumps(receive_data, sort_keys=True, indent=2)
+    except Exception, e:
+        print resp
 
 
 def boot_server():
-    print "Boot a server"
-
-
-def reset_server():
-    print "Update a server"
-
-
-def stop_server():
-    print "Stop a server"
     global NOVA_EP
     global TOKEN
     global TENANT
+    print "Boot a server"
+
+    if len(sys.argv[1:]) != 2:
+        error_wrong_number_args()
+        exit(1)
+
+    server_name = sys.argv[2]
+    resp = novaclient.create(NOVA_EP, server_name, TOKEN, TENANT)
+    try:
+        receive_data = json.loads(resp)
+        print json.dumps(receive_data, sort_keys=True, indent=2)
+    except Exception, e:
+        print resp
+
+
+def reset_server():
+    global NOVA_EP
+    global TOKEN
+    global TENANT
+    print "Update a server"
+
+    if len(sys.argv[1:]) != 3:
+        error_wrong_number_args()
+        exit(1)
+
+    server_uuid = sys.argv[2]
+    server_name = sys.argv[3]
+    resp = novaclient.update(NOVA_EP, server_uuid, server_name, TOKEN, TENANT)
+    try:
+        receive_data = json.loads(resp)
+        print json.dumps(receive_data, sort_keys=True, indent=2)
+    except Exception, e:
+        print resp
+
+
+def stop_server():
+    global NOVA_EP
+    global TOKEN
+    global TENANT
+    print "Stop a server"
 
     if len(sys.argv[1:]) != 2:
         error_wrong_number_args()
@@ -60,9 +95,7 @@ def stop_server():
         receive_data = json.loads(resp)
         print json.dumps(receive_data, sort_keys=True, indent=2)
     except:
-        receive_data = "The server has been stoped.\n %s" % resp
-        print receive_data
-
+        print resp
 
 
 def main():
@@ -113,8 +146,9 @@ def error_invalid_arg():
 def error_format():
     print "Example: chenjie-novaclient {list|show|boot|reset|stop}"
 
+
 def check_env(env_arg):
-    if os.environ[env_arg] is None or os.environ[env_arg] == '':
+    if (not os.environ.has_key(env_arg)) or (os.environ[env_arg] == ''):
         wrong_env_args(env_arg)
         exit(1)
     print "%s: %s" % (env_arg, os.environ[env_arg])

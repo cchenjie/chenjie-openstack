@@ -2,7 +2,7 @@ __author__ = 'cchenjie'
 from webob.dec import wsgify
 import webob
 import uuid
-import simplejson
+import simplejson as json
 
 
 class Controller(object):
@@ -13,9 +13,9 @@ class Controller(object):
             self.instances[inst_id] = {'id': inst_id, 'name': 'inst-' + str(i)}
 
     def create(self, req):
-        print(req.params)
-        name = req.params['name']
-        if name:
+        request = json.loads(req.body)
+        name = request['server']['name']
+        if name is not None and name != "":
             inst_id = str(uuid.uuid4())
             inst = {'id': inst_id, 'name': name}
             self.instances[inst_id] = inst
@@ -30,14 +30,19 @@ class Controller(object):
 
     def update(self, req, instance_id):
         inst = self.instances.get(instance_id)
-        name = req.params['name']
-        if inst and name:
+        request = json.loads(req.body)
+        name = request['server']['name']
+
+        if (name is not None and name != "") and (inst is not None and inst != ""):
             inst['name'] = name
             return {'instance': inst}
+        else:
+            return Exception("404 Instance Not Found")
 
     def delete(self, req, instance_id):
         if self.instances.get(instance_id):
             self.instances.pop(instance_id)
+            return "The server %s has been stoped" % instance_id
 
     @wsgify(RequestClass=webob.Request)
     def __call__(self, req):
@@ -50,8 +55,11 @@ class Controller(object):
 
         if result is None:
             return webob.Response(body='', status='204 Not Found', headerlist=[('Content-Type', 'application/json')])
+        if isinstance(result, Exception):
+            print(result)
+            return webob.Response(body=result.message, status=result.message, headerlist=[('Content-Type', 'application/json')])
         else:
             if not isinstance(result, basestring):
-                result = simplejson.dumps(result) + '\n'
+                result = json.dumps(result) + '\n'
             return result
 
